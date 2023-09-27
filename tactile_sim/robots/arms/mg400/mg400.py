@@ -19,7 +19,7 @@ class MG400(BaseRobotArm):
 
         # set info specific to arm
         self.setup_mg400_info()
-        self.robot_type = 'MG400'
+        self.robot_type = 'mg400'
 
         # reset the arm to rest poses
         self.reset()
@@ -89,12 +89,9 @@ class MG400(BaseRobotArm):
 
         # convert desired velocities from cart space to joint space
         req_joint_vels = np.matmul(inv_jac, capped_desired_vels)
-        if self.robot_type == "MG400":
-            joint_poses = list(req_joint_vels)
-            joint_poses[-3] = joint_poses[1]
-            joint_poses[-2] = -joint_poses[1]
-            joint_poses[-1] = joint_poses[1] + joint_poses[2]
-            req_joint_vels = tuple(joint_poses)
+        if self.robot_type == "mg400":
+            req_joint_vels = self.mimic_parallel_joints_movement(req_joint_vels)
+
 
         # apply joint space velocities
         self._pb.setJointMotorControlArray(
@@ -142,12 +139,8 @@ class MG400(BaseRobotArm):
             residualThreshold=1e-8,
         )
 
-        if self.robot_type == "MG400":
-            joint_poses = list(joint_poses)
-            joint_poses[-3] = joint_poses[1]
-            joint_poses[-2] = -joint_poses[1]
-            joint_poses[-1] = joint_poses[1] + joint_poses[2]
-            joint_poses = tuple(joint_poses)
+        if self.robot_type == "mg400":
+            joint_poses = self.mimic_parallel_joints_movement(joint_poses)
 
         # set joint control
         self._pb.setJointMotorControlArray(
@@ -198,14 +191,19 @@ class MG400(BaseRobotArm):
             forces=[self.max_force] * self.num_control_dofs,
         )
         # set target positions for blocking move
-        if self.robot_type == "MG400":
-            joint_poses = list(joint_poses)
-            joint_poses[-3] = joint_poses[1]
-            joint_poses[-2] = -joint_poses[1]
-            joint_poses[-1] = joint_poses[1] + joint_poses[2]
-            joint_poses = tuple(joint_poses)
+        if self.robot_type == "mg400":
+            joint_poses = self.mimic_parallel_joints_movement(joint_poses)
 
         self.target_pos_worldframe = target_pos
         self.target_rpy_worldframe = target_rpy
         self.target_orn_worldframe = target_orn
         self.target_joints = joint_poses
+
+
+    def mimic_parallel_joints_movement(self, cur_joint_pos):
+        joint_poses = list(cur_joint_pos)
+        joint_poses[-3] = joint_poses[1]
+        joint_poses[-2] = -joint_poses[1]
+        joint_poses[-1] = joint_poses[1] + joint_poses[2]
+        cur_joint_pos = tuple(joint_poses)
+        return cur_joint_pos

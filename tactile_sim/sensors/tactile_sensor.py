@@ -357,9 +357,10 @@ class TactileSensor:
                 if self.random_damping:
                     self.sensor_dynamics['damping'] = np.random.randint(30,80)
                 self._pb.changeDynamics(
-                    self.robot_id,
+                    self.embodiment_id,
                     self.tactile_link_ids['tip'],
                     contactDamping=self.sensor_dynamics['damping'],
+                    contactStiffness=self.sensor_dynamics['stiffness'],
                 )
 
 

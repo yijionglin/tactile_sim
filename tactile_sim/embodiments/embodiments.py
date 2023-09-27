@@ -160,28 +160,22 @@ class TactileArmEmbodiment(ArmEmbodiment):
                 "combined_urdfs",
                 self.arm_type + "_" + self.tactile_sensor_type + ".urdf",
             )
-            
-        # elif self.robot_lv == 'main_robot':
-        #     self.base_pos = self.robot_arm_params["base_pos_and_init_pos"][self.robot_lv]['base_pos']
-        #     self.base_rpy = self.robot_arm_params["base_pos_and_init_pos"][self.robot_lv]['base_rpy']
-        #     self.base_orn = self._pb.getQuaternionFromEuler(self.base_rpy)
-        #     asset_name = os.path.join(
-        #         "embodiment_assets",
-        #         "bitouch_urdfs",
-        #         "main_" + self.arm_type + "_with_" + self.tactile_sensor_type + ".urdf",
-        #     )
+
+        # For BiTouch    
         else :
+            # worldframe
             self.base_pos = self.robot_arm_params["base_pos_and_init_pos"][self.robot_lv]['base_pos']
             self.base_rpy = self.robot_arm_params["base_pos_and_init_pos"][self.robot_lv]['base_rpy']
+            # workframe
             self.update_init_pos = self.robot_arm_params["base_pos_and_init_pos"][self.robot_lv]['update_init_pos']
             self.update_init_rpy = self.robot_arm_params["base_pos_and_init_pos"][self.robot_lv]['update_init_rpy']
+            self.update_init_pose = [x for x in self.update_init_pos] + [x for x in  self.update_init_rpy]
             self.base_orn = self._pb.getQuaternionFromEuler(self.base_rpy)
             asset_name = os.path.join(
                 "embodiment_assets",
                 "bitouch_urdfs",
                 self.robot_lv + "_" + self.arm_type + "_with_" + self.tactile_sensor_type + ".urdf",
             )
-            set_trace()
         self.embodiment_id = self._pb.loadURDF(
             add_assets_path(asset_name), self.base_pos, self.base_orn, useFixedBase=True
         )
@@ -201,9 +195,10 @@ class TactileArmEmbodiment(ArmEmbodiment):
         """
         self.arm.reset()
         self.tactile_sensor.reset()
-
-        # move to the initial position
+        
+        # move to the initial position, worldframe
         self.arm.move_linear(reset_tcp_pose, quick_mode=True)
+
 
     def full_reset(self):
         self.load_urdf()
