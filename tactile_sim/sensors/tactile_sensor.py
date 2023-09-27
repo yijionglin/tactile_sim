@@ -21,6 +21,8 @@ class TactileSensor:
         sensor_type="standard",
         sensor_core="no_core",
         sensor_dynamics={},
+        random_friction = False,
+        random_damping = False,
         show_tactile=True,
         sensor_num=int(0),
     ):
@@ -49,6 +51,8 @@ class TactileSensor:
         # self.save_reference_images()
         self.update_cam_frame()
         self.connect()
+        self.random_friction = random_friction
+        self.random_damping = random_damping
         self.turn_off_collisions()
 
     def turn_off_collisions(self):
@@ -192,6 +196,11 @@ class TactileSensor:
             self.rel_cam_rpy = (np.pi, -np.pi/2, -np.pi)
             self.focal_dist = 0.0015
             self.fov = 65
+        elif self.sensor_type == 'mini_right_angle_inner_tactip' :
+            self.rel_cam_pos = (0, 0, 0.001)
+            self.rel_cam_rpy = (0, -np.pi/2, 90*np.pi/180)
+            self.focal_dist = 0.065
+            self.fov = 60
         else:
             sys.exit("Incorrect sensor_type specified: {}".format(self.sensor_type))
 
@@ -335,9 +344,24 @@ class TactileSensor:
                 contactDamping=self.sensor_dynamics["damping"],
                 contactStiffness=self.sensor_dynamics["stiffness"],
             )
+
+            if self.sensor_dynamics["friction"] is not None:
+                if self.random_friction:
+                    self.sensor_dynamics["friction"] = np.random.randint(1,500)
+
             self._pb.changeDynamics(
                 self.embodiment_id, self.tactile_link_ids["tip"], lateralFriction=self.sensor_dynamics["friction"]
             )
+
+            if self.sensor_dynamics['damping'] is not None :
+                if self.random_damping:
+                    self.sensor_dynamics['damping'] = np.random.randint(30,80)
+                self._pb.changeDynamics(
+                    self.robot_id,
+                    self.tactile_link_ids['tip'],
+                    contactDamping=self.sensor_dynamics['damping'],
+                )
+
 
     def process(self):
         """

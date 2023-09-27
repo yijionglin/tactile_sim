@@ -1,7 +1,7 @@
 import numpy as np
 import warnings
 from tactile_sim.utils.pybullet_draw_utils import draw_link_frame
-
+from ipdb import set_trace
 warnings.simplefilter('always', UserWarning)
 
 
@@ -41,8 +41,15 @@ class BaseRobotArm:
             self._pb.resetJointState(self.embodiment_id, i, self.rest_poses[i])
             self._pb.changeDynamics(self.embodiment_id, i, linearDamping=0.04, angularDamping=0.04)
             self._pb.changeDynamics(self.embodiment_id, i, jointDamping=0.01)
-
+        
         # hold in rest pose
+        if self.robot_type == "mg400":
+            joint_poses = list(joint_vels)
+            joint_poses[-3] = joint_poses[1]
+            joint_poses[-2] = -joint_poses[1]
+            joint_poses[-1] = joint_poses[1] + joint_poses[2]
+            joint_vels = tuple(joint_poses)
+
         self._pb.setJointMotorControlArray(
             bodyIndex=self.embodiment_id,
             jointIndices=self.control_joint_ids,
@@ -127,7 +134,12 @@ class BaseRobotArm:
         Applys motor torques that compensate for gravity.
         """
         grav_comp_torque = self.compute_gravity_compensation()
-
+        if self.robot_type == "mg400":
+            joint_poses = list(joint_vels)
+            joint_poses[-3] = joint_poses[1]
+            joint_poses[-2] = -joint_poses[1]
+            joint_poses[-1] = joint_poses[1] + joint_poses[2]
+            joint_vels = tuple(joint_poses)
         self._pb.setJointMotorControlArray(
             bodyIndex=self.embodiment_id,
             jointIndices=self.control_joint_ids,
@@ -155,7 +167,12 @@ class BaseRobotArm:
             residualThreshold=1e-8,
         )
         joint_velocities = np.array([0] * self.num_control_dofs)
-
+        if self.robot_type == "mg400":
+            joint_poses = list(joint_vels)
+            joint_poses[-3] = joint_poses[1]
+            joint_poses[-2] = -joint_poses[1]
+            joint_poses[-1] = joint_poses[1] + joint_poses[2]
+            joint_vels = tuple(joint_poses)
         # set joint control
         self._pb.setJointMotorControlArray(
             self.embodiment_id,
@@ -205,6 +222,13 @@ class BaseRobotArm:
         # convert desired velocities from cart space to joint space
         joint_vels = np.matmul(inv_jac, target_vels)
 
+        if self.robot_type == "mg400":
+            joint_poses = list(joint_vels)
+            joint_poses[-3] = joint_poses[1]
+            joint_poses[-2] = -joint_poses[1]
+            joint_poses[-1] = joint_poses[1] + joint_poses[2]
+            joint_vels = tuple(joint_poses)
+
         # apply joint space velocities
         self._pb.setJointMotorControlArray(
             self.embodiment_id,
@@ -223,7 +247,12 @@ class BaseRobotArm:
         Go directly to a specified joint configuration.
         """
         joint_velocities = np.array([0] * self.num_control_dofs)
-
+        if self.robot_type == "mg400":
+            joint_poses = list(joint_vels)
+            joint_poses[-3] = joint_poses[1]
+            joint_poses[-2] = -joint_poses[1]
+            joint_poses[-1] = joint_poses[1] + joint_poses[2]
+            joint_vels = tuple(joint_poses)
         # set joint control
         self._pb.setJointMotorControlArray(
             self.embodiment_id,
@@ -243,6 +272,12 @@ class BaseRobotArm:
         """
         Set the desired joint velicities.
         """
+        if self.robot_type == "mg400":
+            joint_poses = list(joint_vels)
+            joint_poses[-3] = joint_poses[1]
+            joint_poses[-2] = -joint_poses[1]
+            joint_poses[-1] = joint_poses[1] + joint_poses[2]
+            joint_vels = tuple(joint_poses)
         self._pb.setJointMotorControlArray(
             self.embodiment_id,
             self.control_joint_ids,
@@ -320,7 +355,12 @@ class BaseRobotArm:
                 # this helps to acheive final pose
                 if all(np.abs(diff_j) < constant_vel):
                     constant_vel /= 2
-
+                if self.robot_type == "mg400":
+                    joint_poses = list(joint_vels)
+                    joint_poses[-3] = joint_poses[1]
+                    joint_poses[-2] = -joint_poses[1]
+                    joint_poses[-1] = joint_poses[1] + joint_poses[2]
+                    joint_vels = tuple(joint_poses)
                 # set joint control
                 self._pb.setJointMotorControlArray(
                     self.embodiment_id,

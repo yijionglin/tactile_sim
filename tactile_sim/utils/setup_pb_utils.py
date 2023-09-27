@@ -80,6 +80,45 @@ def load_standard_environment(pb):
         [0.0, 0.0, 0.0, 1.0],
     )
 
+def load_standard_bitouch_environment(pb):
+    """
+    Load a standard bitouch environment with a plane, a table and a platform.
+    """
+    pb.loadURDF(
+        add_assets_path("shared_assets/environment_objects/plane/plane.urdf"),
+        [0, 0, -0.625],
+    )
+    pb.loadURDF(
+        add_assets_path("shared_assets/environment_objects/table/table.urdf"),
+        [0.75, 0.0, -0.625],
+        [0.0, 0.0, 0.0, 1.0],
+    )
+    pb.loadURDF(
+        add_assets_path("shared_assets/environment_objects/table/small_table.urdf"),
+        [0.0, 0.0, -0.0],
+        [0.0, 0.0, 0.0, 1.0],
+    )
+    pb.loadURDF(
+        add_assets_path("/home/bourne/it_tg_py38_sac/tactile_gym_dev/tactile_gym/assets/shared_assets/environment_objects/standoff_urdf/urdf/standoff_urdf.urdf"),
+        [-0.25, 0.15, 0.07],
+        [0.7, 0.0, 0, 0.7],useFixedBase=True
+    )
+    pb.loadURDF(
+        add_assets_path("/home/bourne/it_tg_py38_sac/tactile_gym_dev/tactile_gym/assets/shared_assets/environment_objects/standoff_urdf/urdf/standoff_urdf.urdf"),
+        [0.28, 0.15, 0.07],
+        [0.7, 0.0, 0, 0.7], useFixedBase=True
+    )
+    pb.loadURDF(
+        add_assets_path("/home/bourne/it_tg_py38_sac/tactile_gym_dev/tactile_gym/assets/shared_assets/environment_objects/standoff_urdf/urdf/standoff_urdf.urdf"),
+        [-0.25, -0.15, 0.07],
+        [0.7, 0.0, 0, 0.7],useFixedBase=True
+    )
+    pb.loadURDF(
+        add_assets_path("/home/bourne/it_tg_py38_sac/tactile_gym_dev/tactile_gym/assets/shared_assets/environment_objects/standoff_urdf/urdf/standoff_urdf.urdf"),
+        [0.28, -0.15, 0.07],
+        [0.7, 0.0, 0, 0.7], useFixedBase=True
+    )
+
 
 def load_stim(pb, stim_name, stim_pose, fixed_base=False, scale=1.0):
     """

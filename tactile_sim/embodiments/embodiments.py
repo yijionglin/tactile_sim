@@ -4,16 +4,18 @@ from tactile_sim.assets import add_assets_path
 from tactile_sim.robots.arms import arm_mapping
 from tactile_sim.sensors.tactile_sensor import TactileSensor
 from tactile_sim.sensors.vision_sensor import VisionSensor
-
+from ipdb import set_trace
 
 class ArmEmbodiment:
     def __init__(
         self,
         pb,
-        robot_arm_params={}
+        robot_arm_params={},
+        robot_lv = None,
     ):
 
         self._pb = pb
+        self.robot_arm_params = robot_arm_params
         self.arm_type = robot_arm_params["type"]
 
         if "tcp_link_name" in robot_arm_params:
@@ -23,6 +25,7 @@ class ArmEmbodiment:
 
         # load the urdf file
         self.load_urdf()
+        self.robot_lv = robot_lv
 
         # instantiate a robot arm
         self.arm = arm_mapping[self.arm_type](
@@ -31,8 +34,9 @@ class ArmEmbodiment:
             tcp_link_id=self.tcp_link_id,
             link_name_to_index=self.link_name_to_index,
             joint_name_to_index=self.joint_name_to_index,
-            rest_poses=robot_arm_params['rest_poses'],
+            rest_poses=robot_arm_params['rest_poses'] if self.robot_lv is None else robot_arm_params['rest_poses'][self.robot_lv],
         )
+        
 
     def close(self):
         if self._pb.isConnected():
@@ -98,10 +102,12 @@ class TactileArmEmbodiment(ArmEmbodiment):
         self,
         pb,
         robot_arm_params={},
-        tactile_sensor_params={}
+        tactile_sensor_params={},
+        robot_lv = None,
     ):
 
         self._pb = pb
+        self.robot_arm_params = robot_arm_params
         self.arm_type = robot_arm_params["type"]
         self.tactile_sensor_type = tactile_sensor_params["type"]
 
@@ -120,7 +126,7 @@ class TactileArmEmbodiment(ArmEmbodiment):
             tcp_link_id=self.tcp_link_id,
             link_name_to_index=self.link_name_to_index,
             joint_name_to_index=self.joint_name_to_index,
-            rest_poses=robot_arm_params['rest_poses'],
+            rest_poses=robot_arm_params['rest_poses'] if self.robot_lv is None else robot_arm_params['rest_poses'][self.robot_lv],
         )
 
         # connect a tactile sensor
@@ -137,19 +143,45 @@ class TactileArmEmbodiment(ArmEmbodiment):
             show_tactile=tactile_sensor_params["show_tactile"],
             sensor_num=1,
         )
+        self.robot_lv = robot_lv
 
     def load_urdf(self):
         """
         Load the robot arm model into pybullet
         """
-        self.base_pos = [0, 0, 0]
-        self.base_rpy = [0, 0, 0]
-        self.base_orn = self._pb.getQuaternionFromEuler(self.base_rpy)
-        asset_name = os.path.join(
-            "embodiment_assets",
-            "combined_urdfs",
-            self.arm_type + "_" + self.tactile_sensor_type + ".urdf",
-        )
+        
+
+        if self.robot_lv is None:
+            self.base_pos = [0, 0, 0]
+            self.base_rpy = [0, 0, 0]
+            self.base_orn = self._pb.getQuaternionFromEuler(self.base_rpy)
+            asset_name = os.path.join(
+                "embodiment_assets",
+                "combined_urdfs",
+                self.arm_type + "_" + self.tactile_sensor_type + ".urdf",
+            )
+            
+        # elif self.robot_lv == 'main_robot':
+        #     self.base_pos = self.robot_arm_params["base_pos_and_init_pos"][self.robot_lv]['base_pos']
+        #     self.base_rpy = self.robot_arm_params["base_pos_and_init_pos"][self.robot_lv]['base_rpy']
+        #     self.base_orn = self._pb.getQuaternionFromEuler(self.base_rpy)
+        #     asset_name = os.path.join(
+        #         "embodiment_assets",
+        #         "bitouch_urdfs",
+        #         "main_" + self.arm_type + "_with_" + self.tactile_sensor_type + ".urdf",
+        #     )
+        else :
+            self.base_pos = self.robot_arm_params["base_pos_and_init_pos"][self.robot_lv]['base_pos']
+            self.base_rpy = self.robot_arm_params["base_pos_and_init_pos"][self.robot_lv]['base_rpy']
+            self.update_init_pos = self.robot_arm_params["base_pos_and_init_pos"][self.robot_lv]['update_init_pos']
+            self.update_init_rpy = self.robot_arm_params["base_pos_and_init_pos"][self.robot_lv]['update_init_rpy']
+            self.base_orn = self._pb.getQuaternionFromEuler(self.base_rpy)
+            asset_name = os.path.join(
+                "embodiment_assets",
+                "bitouch_urdfs",
+                self.robot_lv + "_" + self.arm_type + "_with_" + self.tactile_sensor_type + ".urdf",
+            )
+            set_trace()
         self.embodiment_id = self._pb.loadURDF(
             add_assets_path(asset_name), self.base_pos, self.base_orn, useFixedBase=True
         )
@@ -160,6 +192,8 @@ class TactileArmEmbodiment(ArmEmbodiment):
 
         # get the link and tcp IDs
         self.tcp_link_id = self.link_name_to_index[self.tcp_link_name]
+
+
 
     def reset(self, reset_tcp_pose):
         """
@@ -205,7 +239,7 @@ class VisualArmEmbodiment(ArmEmbodiment):
             tcp_link_id=self.tcp_link_id,
             link_name_to_index=self.link_name_to_index,
             joint_name_to_index=self.joint_name_to_index,
-            rest_poses=robot_arm_params['rest_poses'],
+            rest_poses=robot_arm_params['rest_poses'] if self.robot_lv is None else robot_arm_params['rest_poses'][self.robot_lv],
         )
 
         # connect a static vision sensor
@@ -228,9 +262,11 @@ class VisuoTactileArmEmbodiment(TactileArmEmbodiment):
         pb,
         robot_arm_params={},
         tactile_sensor_params={},
-        visual_sensor_params={}
-    ):
-
+        visual_sensor_params={},
+        robot_lv = None,
+    ):  
+        self.robot_arm_params = robot_arm_params
+        self.robot_lv = robot_lv
         self._pb = pb
         self.arm_type = robot_arm_params["type"]
         self.tactile_sensor_type = tactile_sensor_params["type"]
@@ -250,7 +286,7 @@ class VisuoTactileArmEmbodiment(TactileArmEmbodiment):
             tcp_link_id=self.tcp_link_id,
             link_name_to_index=self.link_name_to_index,
             joint_name_to_index=self.joint_name_to_index,
-            rest_poses=robot_arm_params['rest_poses'],
+            rest_poses=robot_arm_params['rest_poses'] if self.robot_lv is None else robot_arm_params['rest_poses'][self.robot_lv],
         )
 
         # connect a tactile sensor
@@ -274,6 +310,6 @@ class VisuoTactileArmEmbodiment(TactileArmEmbodiment):
             sensor_num=1,
             **visual_sensor_params
         )
-
+        
     def get_visual_observation(self):
         return self.vision_sensor.get_observation()
