@@ -90,8 +90,8 @@ def load_standard_bitouch_environment(pb):
     )
     pb.loadURDF(
         add_assets_path("shared_assets/environment_objects/table/table.urdf"),
-        [0.75, 0.0, -0.625],
-        [0.0, 0.0, 0.0, 1.0],
+        [0.1, 0.0, -0.625],
+        [0.0, 0, 0.7, 0.7],
     )
     pb.loadURDF(
         add_assets_path("shared_assets/environment_objects/table/small_table.urdf"),

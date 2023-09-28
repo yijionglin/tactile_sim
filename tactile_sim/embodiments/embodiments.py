@@ -259,7 +259,9 @@ class VisuoTactileArmEmbodiment(TactileArmEmbodiment):
         tactile_sensor_params={},
         visual_sensor_params={},
         robot_lv = None,
+        robot_id = None,
     ):  
+        self.robot_id = robot_id
         self.robot_arm_params = robot_arm_params
         self.robot_lv = robot_lv
         self._pb = pb
@@ -270,7 +272,7 @@ class VisuoTactileArmEmbodiment(TactileArmEmbodiment):
             self.tcp_link_name = robot_arm_params["tcp_link_name"]
         else:
             self.tcp_link_name = "ee_link"
-
+        
         # load the urdf file
         self.load_urdf()
 
@@ -281,10 +283,11 @@ class VisuoTactileArmEmbodiment(TactileArmEmbodiment):
             tcp_link_id=self.tcp_link_id,
             link_name_to_index=self.link_name_to_index,
             joint_name_to_index=self.joint_name_to_index,
-            rest_poses=robot_arm_params['rest_poses'] if self.robot_lv is None else robot_arm_params['rest_poses'][self.robot_lv],
+            rest_poses=robot_arm_params['rest_poses'] if self.robot_id is None else robot_arm_params['rest_poses'][self.robot_lv],
         )
 
         # connect a tactile sensor
+        
         self.tactile_sensor = TactileSensor(
             pb,
             embodiment_id=self.embodiment_id,
@@ -296,13 +299,13 @@ class VisuoTactileArmEmbodiment(TactileArmEmbodiment):
             sensor_core=tactile_sensor_params["core"],
             sensor_dynamics=tactile_sensor_params["dynamics"],
             show_tactile=tactile_sensor_params["show_tactile"],
-            sensor_num=1,
+            sensor_num= 1 if self.robot_id is None else self.robot_id,
         )
 
         # connect a static vision sensor
         self.vision_sensor = VisionSensor(
             pb,
-            sensor_num=1,
+            sensor_num= 1 if self.robot_id is None else self.robot_id,
             **visual_sensor_params
         )
         

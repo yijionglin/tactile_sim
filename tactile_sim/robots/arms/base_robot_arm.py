@@ -161,6 +161,7 @@ class BaseRobotArm:
         )
         joint_velocities = np.array([0] * self.num_control_dofs)
         if self.robot_type == "mg400":
+            joint_positions = self.mimic_parallel_joints_movement(joint_positions)
             joint_velocities = self.mimic_parallel_joints_movement(joint_velocities)
         # set joint control
         self._pb.setJointMotorControlArray(
@@ -234,7 +235,8 @@ class BaseRobotArm:
         """
         joint_velocities = np.array([0] * self.num_control_dofs)
         if self.robot_type == "mg400":
-            joint_poses = self.mimic_parallel_joints_movement(joint_poses)
+            joint_positions = self.mimic_parallel_joints_movement(joint_positions)
+            joint_velocities = self.mimic_parallel_joints_movement(joint_velocities)
 
         # set joint control
         self._pb.setJointMotorControlArray(
@@ -335,11 +337,7 @@ class BaseRobotArm:
                 if all(np.abs(diff_j) < constant_vel):
                     constant_vel /= 2
                 if self.robot_type == "mg400":
-                    joint_poses = list(joint_vels)
-                    joint_poses[-3] = joint_poses[1]
-                    joint_poses[-2] = -joint_poses[1]
-                    joint_poses[-1] = joint_poses[1] + joint_poses[2]
-                    joint_vels = tuple(joint_poses)
+                    step_j = self.mimic_parallel_joints_movement(step_j)
                     
                 # set joint control
                 self._pb.setJointMotorControlArray(

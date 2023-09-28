@@ -63,9 +63,11 @@ class MG400(BaseRobotArm):
         capped_desired_vels = self.check_TCP_vel_lims(np.array(desired_vels))
 
         # convert desired vels from workframe to worldframe
+        print("before", capped_desired_vels)
         capped_desired_vels[:3], capped_desired_vels[3:] = self.workvel_to_worldvel(
             capped_desired_vels[:3], capped_desired_vels[3:]
         )
+        print("after", capped_desired_vels)
 
         # get current joint positions and velocities
         q, qd = self.get_current_joint_pos_vel()
@@ -207,3 +209,5 @@ class MG400(BaseRobotArm):
         joint_poses[-1] = joint_poses[1] + joint_poses[2]
         cur_joint_pos = tuple(joint_poses)
         return cur_joint_pos
+
+
