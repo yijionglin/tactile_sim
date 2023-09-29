@@ -55,7 +55,7 @@ class ArmEmbodiment:
             "urdfs",
             self.arm_type + ".urdf",
         )
-
+        
         self.embodiment_id = self._pb.loadURDF(
             add_assets_path(asset_name), self.base_pos, self.base_orn, useFixedBase=True
         )
@@ -160,7 +160,6 @@ class TactileArmEmbodiment(ArmEmbodiment):
                 "combined_urdfs",
                 self.arm_type + "_" + self.tactile_sensor_type + ".urdf",
             )
-
         # For BiTouch    
         else :
             # worldframe

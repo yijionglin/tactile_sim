@@ -196,11 +196,12 @@ class TactileSensor:
             self.rel_cam_rpy = (np.pi, -np.pi/2, -np.pi)
             self.focal_dist = 0.0015
             self.fov = 65
-        elif self.sensor_type == 'mini_right_angle_inner_tactip' :
+        elif 'mini_right_angle' in self.sensor_type :
             self.rel_cam_pos = (0, 0, 0.001)
             self.rel_cam_rpy = (0, -np.pi/2, 90*np.pi/180)
             self.focal_dist = 0.065
             self.fov = 60
+
         else:
             sys.exit("Incorrect sensor_type specified: {}".format(self.sensor_type))
 

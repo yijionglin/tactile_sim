@@ -118,7 +118,7 @@ class BaseRobotArm:
         Calculates torques to apply that compensate for effect of gravity.
         """
         cur_joint_pos, cur_joint_vel = self.get_current_joint_pos_vel()
-        if self.robot_type == "mg400":
+        if self.name == "sim_mg400":
             cur_joint_pos = self.mimic_parallel_joints_movement(cur_joint_pos)
             cur_joint_vel = self.mimic_parallel_joints_movement(cur_joint_vel)
 
@@ -160,7 +160,7 @@ class BaseRobotArm:
             residualThreshold=1e-8,
         )
         joint_velocities = np.array([0] * self.num_control_dofs)
-        if self.robot_type == "mg400":
+        if self.name == "sim_mg400":
             joint_positions = self.mimic_parallel_joints_movement(joint_positions)
             joint_velocities = self.mimic_parallel_joints_movement(joint_velocities)
         # set joint control
@@ -212,7 +212,7 @@ class BaseRobotArm:
         # convert desired velocities from cart space to joint space
         joint_vels = np.matmul(inv_jac, target_vels)
 
-        if self.robot_type == "mg400":
+        if self.name == "sim_mg400":
             joint_vels = self.mimic_parallel_joints_movement(joint_vels)
 
 
@@ -234,7 +234,7 @@ class BaseRobotArm:
         Go directly to a specified joint configuration.
         """
         joint_velocities = np.array([0] * self.num_control_dofs)
-        if self.robot_type == "mg400":
+        if self.name == "sim_mg400":
             joint_positions = self.mimic_parallel_joints_movement(joint_positions)
             joint_velocities = self.mimic_parallel_joints_movement(joint_velocities)
 
@@ -257,7 +257,7 @@ class BaseRobotArm:
         """
         Set the desired joint velicities.
         """
-        if self.robot_type == "mg400":
+        if self.name == "sim_mg400":
             joint_velocities = self.mimic_parallel_joints_movement(joint_velocities)
         self._pb.setJointMotorControlArray(
             self.embodiment_id,
@@ -336,7 +336,7 @@ class BaseRobotArm:
                 # this helps to acheive final pose
                 if all(np.abs(diff_j) < constant_vel):
                     constant_vel /= 2
-                if self.robot_type == "mg400":
+                if self.name == "sim_mg400":
                     step_j = self.mimic_parallel_joints_movement(step_j)
                     
                 # set joint control
