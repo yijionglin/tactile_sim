@@ -99,22 +99,22 @@ def load_standard_bitouch_environment(pb):
         [0.0, 0.0, 0.0, 1.0],
     )
     pb.loadURDF(
-        add_assets_path("/home/bourne/it_tg_py38_sac/tactile_gym_dev/tactile_gym/assets/shared_assets/environment_objects/standoff_urdf/urdf/standoff_urdf.urdf"),
+        add_assets_path("shared_assets/environment_objects/standoff_urdf/urdf/standoff_urdf.urdf"),
         [-0.25, 0.15, 0.07],
         [0.7, 0.0, 0, 0.7],useFixedBase=True
     )
     pb.loadURDF(
-        add_assets_path("/home/bourne/it_tg_py38_sac/tactile_gym_dev/tactile_gym/assets/shared_assets/environment_objects/standoff_urdf/urdf/standoff_urdf.urdf"),
+        add_assets_path("shared_assets/environment_objects/standoff_urdf/urdf/standoff_urdf.urdf"),
         [0.28, 0.15, 0.07],
         [0.7, 0.0, 0, 0.7], useFixedBase=True
     )
     pb.loadURDF(
-        add_assets_path("/home/bourne/it_tg_py38_sac/tactile_gym_dev/tactile_gym/assets/shared_assets/environment_objects/standoff_urdf/urdf/standoff_urdf.urdf"),
+        add_assets_path("shared_assets/environment_objects/standoff_urdf/urdf/standoff_urdf.urdf"),
         [-0.25, -0.15, 0.07],
         [0.7, 0.0, 0, 0.7],useFixedBase=True
     )
     pb.loadURDF(
-        add_assets_path("/home/bourne/it_tg_py38_sac/tactile_gym_dev/tactile_gym/assets/shared_assets/environment_objects/standoff_urdf/urdf/standoff_urdf.urdf"),
+        add_assets_path("shared_assets/environment_objects/standoff_urdf/urdf/standoff_urdf.urdf"),
         [0.28, -0.15, 0.07],
         [0.7, 0.0, 0, 0.7], useFixedBase=True
     )
