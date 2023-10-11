@@ -2,9 +2,9 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 
 <!-- [Project Website](https://sites.google.com/my.bristol.ac.uk/tactile-gym-sim2real/home) &nbsp;&nbsp;• -->
-**Tactile Gym 2.0**: [Project Website](https://sites.google.com/my.bristol.ac.uk/tactilegym2/home) &nbsp;&nbsp;•&nbsp;&nbsp;[Paper](https://ieeexplore.ieee.org/abstract/document/9847020)
+**Tactile Gym 2.0**: [Project Website](https://sites.google.com/view/tactile-gym-2/) &nbsp;&nbsp;•&nbsp;&nbsp;[Paper](https://ieeexplore.ieee.org/abstract/document/9847020)
 
-**Tactile Gym 1.0**: [Project Website](https://sites.google.com/my.bristol.ac.uk/tactile-gym-sim2real/home) &nbsp;&nbsp;•&nbsp;&nbsp;[Paper](http://arxiv.org/abs/2106.08796)
+**Tactile Gym 1.0**: [Project Website](https://sites.google.com/view/tactile-gym-1/) &nbsp;&nbsp;•&nbsp;&nbsp;[Paper](http://arxiv.org/abs/2106.08796)
 
 This repo contains code for the simulation of various robot arms with tactile sensors in the PyBullet physics engine. Currently, 4 robot arms (UR5, Franka-Panda, Kuke-iiwa and Dobot CR3) are implemented along with tactile sensors of the [Tactip](https://www.liebertpub.com/doi/full/10.1089/soro.2017.0052) and [Gelsight](https://www.mdpi.com/1424-8220/17/12/2762) style.
 
@@ -112,21 +112,17 @@ to run a user controllable example environment.
 If you use this repo in your work, please cite
 
 ```
-@InProceedings{lin2022tactilegym2,
-     title={Tactile Gym 2.0: Sim-to-real Deep Reinforcement Learning for Comparing Low-cost High-Resolution Robot Touch},
-     author={Yijiong Lin and John Lloyd and Alex Church and Nathan F. Lepora},
-     journal={IEEE Robotics and Automation Letters},
-     year={2022},
-     volume={7},
-     number={4},
-     pages={10754-10761},
-     editor={R. Liu A.Banerjee},
-     series={Proceedings of Machine Learning Research},
-     month={August},
-     publisher={IEEE},
-     doi={10.1109/LRA.2022.3195195}}
-     url={https://ieeexplore.ieee.org/abstract/document/9847020},
-}
+@ARTICLE{lin2022tactilegym2,
+  author={Lin, Yijiong and Lloyd, John and Church, Alex and Lepora, Nathan F.},
+  journal={IEEE Robotics and Automation Letters}, 
+  title={Tactile Gym 2.0: Sim-to-Real Deep Reinforcement Learning for Comparing Low-Cost High-Resolution Robot Touch}, 
+  year={2022},
+  volume={7},
+  number={4},
+  pages={10754-10761},
+  doi={10.1109/LRA.2022.3195195},
+  url={https://ieeexplore.ieee.org/abstract/document/9847020},
+  }
 
 @InProceedings{church2021optical,
      title={Tactile Sim-to-Real Policy Transfer via Real-to-Sim Image Translation},
