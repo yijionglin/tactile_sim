@@ -117,6 +117,7 @@ class TactileArmEmbodiment(ArmEmbodiment):
             self.tcp_link_name = "ee_link"
 
         # load the urdf file
+        self.robot_lv = robot_lv
         self.load_urdf()
 
         # instantiate a robot arm
@@ -143,7 +144,7 @@ class TactileArmEmbodiment(ArmEmbodiment):
             show_tactile=tactile_sensor_params["show_tactile"],
             sensor_num=1,
         )
-        self.robot_lv = robot_lv
+        
 
     def load_urdf(self):
         """
